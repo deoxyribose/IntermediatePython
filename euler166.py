@@ -1,3 +1,4 @@
+# Resulting matrices are not magic squares.
 from numpy import array, zeros
 from numpy.linalg import solve
 d = [0,1,2,3,4,5,6,7,8,9]
@@ -29,7 +30,7 @@ def gen_secondpiece(n):
 def calc_lastpiece():
 # Beregn de sidste fire tal.
     matrix = array([1,1,0,0,1,0,0,1,1,0,1,0,0,0,1,1]).reshape(4,4)
-    vektor = array([summen - (m[2,0]+m[2,1]), summen - (m[0,0]+m[1,1]), summen - (m[0,2]+m[1,2]), summen - (m[0,3]+m[1,3])])
+    vektor = array([summen - (m[2,0]+m[2,1]).sum(), summen - (m[0,0]+m[1,1].sum()), summen - (m[0,2]+m[1,2].sum()), summen - (m[0,3]+m[1,3].sum())])
     return solve(matrix,vektor).reshape(2,2)
 for i in range(10**4):
     m[0,0:] = gen_firstpiece(i)
@@ -50,4 +51,5 @@ for i in range(10**4):
                 m[2,1] = summen - (m[0,3] + m[1,2] + m[3,0])
                 m[3,1] = summen - sum(m[1,0:3])
                 m[2:,2:] = calc_lastpiece()
+                print(m)
 
