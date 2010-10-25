@@ -1,16 +1,12 @@
-# Problem: Resulting matrices are not magic squares.
 from numpy import array, zeros 
 from math import isnan
 from numpy.linalg import solve
 m = zeros((4,4))
-count = 0
-r1 = range(10)
-r2 = range(100)
 firstpiece = []
-for a in r1:
-    for b in r1:
-        for c in r1:
-            for d in r1:
+for a in xrange(10):
+    for b in xrange(10):
+        for c in xrange(10):
+            for d in xrange(10):
                 firstpiece.append(a)
                 firstpiece.append(b)
                 firstpiece.append(c)
@@ -18,8 +14,8 @@ for a in r1:
 def gen_firstpiece(n):
    return array(firstpiece[n:n+4])
 secondpiece = []
-for a in r1:
-    for b in r1:
+for a in xrange(10):
+    for b in xrange(10):
         secondpiece.append(a)
         secondpiece.append(b)
 def gen_secondpiece(n):
@@ -32,15 +28,8 @@ def calc_lastpiece():
     x = solve(matrix,vektor).reshape(2,2)
     if len([x.flatten(1)[i] for i in range(4) if x.flatten(1)[i]==abs(round(x.flatten(1)[i]))])==4:
         return x
-    else:
-        return False
-        #Returnerer kun nul-matricer...!!!!
-#
-#
 for i in xrange(10**4):
-#    print("##########NY ITERATION#########")
     m[0,0:] = gen_firstpiece(i)
-# summen er det tal som alle raekker, soejler og diagonaler summerer op til.
     summen = sum(m[0,0:])
     for j in range(100):
         p2 = gen_secondpiece(j)
@@ -51,7 +40,6 @@ for i in xrange(10**4):
             break
         for k in range(100):
             p3 = gen_secondpiece(k)
-#            print(calc_lastpiece())
             if m[0,1].sum() + p3.sum() <= summen:
                 m[1,1:3] = p3
                 m[1,3] = summen - m[1,0:3].sum()
@@ -64,13 +52,3 @@ for i in xrange(10**4):
                 if any([any(map(isnan,r)) for r in m[2:,2:].reshape(4,1)]): break
                 if i > 10:
                     print(m)
-                """
-                print(m)
-                diag1 = []
-                diag2 = []
-                for i in range(3):
-                    print("Summen af %i'te raekke er " % i, m[i,:].sum(), "Summen af %i'te soejle er " % i, m[:,i].sum()) 
-                    diag1 = sum([m[i,i] for i in range(3)])
-                    diag2 = sum([m[i,j] for i in range(3) for j in range(3) if i+j == 3])
-                print("Summen af forste diagonal er: ", diag1,"Summen af anden diagonal er: ", diag2)
-                """
