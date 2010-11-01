@@ -1,6 +1,6 @@
 from numpy import array, zeros, vectorize 
 from math import isnan
-from numpy.linalg import solve
+count = 1
 m = zeros((4,4))
 allm = [map(None,m.flatten(1))]
 len_allm = [-1,0]
@@ -16,7 +16,6 @@ for a in xrange(10):
 def gen_4piece(n):
    return array(piece[n:n+4])
 def gen_2piece(n):
-# En funktion som genererer den de to brikker med hver to tal. 
     return array(piece[n:n+2])
 def gen_One_Piece(n):
     return array(piece[n])
@@ -34,6 +33,7 @@ def ispos(n):
         return False 
     else:
         return True
+ispos2 = vectorize(ispos)
 def is_valid_solut(Solut):
     at_least_one_positive = any(ispos2(Solut))
     not_all_are_zero = any(Solut) 
@@ -42,14 +42,26 @@ def is_valid_solut(Solut):
         return True
     else:
         return False
-ispos2 = vectorize(ispos)
+def none_are_multi_digit(Solut):
+    digit_len = array([len(str(i)) -3 for i in Solut])
+    if any(digit_len):
+#        print(digit_len, "Some were multi-digit, next!")
+        return False
+    else:
+        return True
+def none_are_multi_digit2(Solut):
+    if len([i for i in Solut if i < 10]) == len(Solut):
+        return True
+    else:
+        return False
 allsolut = []
 def is_magic(np_array,s):
     if [np_array[:,i].sum() for i in range(4)] == [np_array[i,:].sum() for i in range(4)]:
         if sum([np_array[i,i].sum() for i in range(4)]) == sum([np_array[i,j].sum() for i in range(4) for j in range(4) if i+j==3]) == s:
             return True
+#def is_a_multiple_of_another
 if __name__ == '__main__':
-    for i in xrange(10**4):
+    for i in xrange(10**6):
         m[0,:] = gen_4piece(i)
         s = sum(m[0,0:])
         for j in range(100):
@@ -72,20 +84,16 @@ if __name__ == '__main__':
                                         -0.5*m[0,3]-m[3,0]+0.5*m[0,2]-0.5*m[0,0]+0.5*s+0.5*m[0,1]
                                         ])
                     if not is_valid_solut(LinSolut): break
+                    if none_are_multi_digit2(LinSolut): break
                     if (map(None,LinSolut) not in allsolut):
                         allsolut.append(map(None,LinSolut))
-#                        print(LinSolut)
                     dist_rest(LinSolut)
                     if (map(None,m.flatten(1)) not in allm) and is_magic(m,s):
 #                        print(m)
                         allm.append(map(None,m.flatten(1)))
-            #    if len_allm[-2] != len_allm[-1]: 
-                    len_allm.append(len(allm))
-#                    print(len(allm))#,len(len_allm))
-#        print(array(allm[-1]).reshape(4,4))
-             #   else:
-              #      continue
-    print(len(allm))
-
-
-
+                        count += 1
+                        if count % 10 == 0:
+                            print("%i | %i" %(count,s))
+                        if count > 3400:
+                            print(count)
+                          #  print(m)
